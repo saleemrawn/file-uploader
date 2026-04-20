@@ -34,4 +34,14 @@ async function createUserAccount(req, res) {
   res.redirect("/login");
 }
 
-module.exports = { getSignUp, getLogin, createUserAccount, userValidators };
+function logoutUser(req, res, next) {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+  });
+
+  res.redirect("/");
+}
+
+module.exports = { getSignUp, getLogin, createUserAccount, logoutUser, userValidators };
