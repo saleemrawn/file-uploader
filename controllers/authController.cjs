@@ -16,6 +16,10 @@ function getSignUp(req, res) {
   res.render("sign-up", { title: "Sign-Up" });
 }
 
+function getLogin(req, res) {
+  res.render("login", { title: "Login" });
+}
+
 async function createUserAccount(req, res) {
   const errors = validationResult(req);
 
@@ -30,4 +34,4 @@ async function createUserAccount(req, res) {
   res.redirect("/login");
 }
 
-module.exports = { getSignUp, createUserAccount, userValidators };
+module.exports = { getSignUp, getLogin, createUserAccount, userValidators };
