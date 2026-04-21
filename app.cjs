@@ -1,7 +1,7 @@
 const express = require("express");
 const indexRouter = require("./routes/indexRouter.cjs");
 const authRouter = require("./routes/authRouter.cjs");
-const uploadRouter = require("./routes/uploadRouter.cjs");
+const fileRouter = require("./routes/fileRouter.cjs");
 const path = require("node:path");
 const expressLayouts = require("express-ejs-layouts");
 const session = require("express-session");
@@ -47,7 +47,7 @@ app.use(async (req, res, next) => {
 });
 app.use("/", indexRouter);
 app.use("/", authRouter);
-app.use("/", uploadRouter);
+app.use("/", fileRouter);
 
 app.listen(port, (error) => {
   if (error) {
