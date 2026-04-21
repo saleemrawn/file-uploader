@@ -1,5 +1,5 @@
 function getHomepage(req, res) {
-  res.render("index", { title: "Upload File", currentUser: req.user?.username });
+  res.render("index", { title: "Upload File" });
 }
 
 module.exports = { getHomepage };
