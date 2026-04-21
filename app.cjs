@@ -1,6 +1,7 @@
 const express = require("express");
 const indexRouter = require("./routes/indexRouter.cjs");
 const authRouter = require("./routes/authRouter.cjs");
+const uploadRouter = require("./routes/uploadRouter.cjs");
 const path = require("node:path");
 const expressLayouts = require("express-ejs-layouts");
 const session = require("express-session");
@@ -33,6 +34,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(expressLayouts);
 app.use("/", indexRouter);
 app.use("/", authRouter);
+app.use("/", uploadRouter);
 
 app.listen(port, (error) => {
   if (error) {
