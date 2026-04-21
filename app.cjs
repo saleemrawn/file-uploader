@@ -47,7 +47,7 @@ app.use(async (req, res, next) => {
 });
 app.use("/", indexRouter);
 app.use("/", authRouter);
-app.use("/", fileRouter);
+app.use("/file", fileRouter);
 
 app.listen(port, (error) => {
   if (error) {
