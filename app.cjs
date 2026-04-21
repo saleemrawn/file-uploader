@@ -6,6 +6,7 @@ const path = require("node:path");
 const expressLayouts = require("express-ejs-layouts");
 const session = require("express-session");
 const passport = require("passport");
+const folderRepository = require("./lib/repositories/folder.repository.js");
 const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
 const { prisma } = require("./lib/prisma.js");
 const app = express();
@@ -33,6 +34,17 @@ app.use(passport.session());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(expressLayouts);
+app.use(async (req, res, next) => {
+  res.locals.currentUser = req.user;
+
+  try {
+    res.locals.folders = req.user ? await folderRepository.getAllFoldersByOwnerId(req.user.id) : [];
+  } catch (err) {
+    return next(err);
+  }
+
+  next();
+});
 app.use("/", indexRouter);
 app.use("/", authRouter);
 app.use("/", uploadRouter);
