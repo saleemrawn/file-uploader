@@ -1,6 +1,6 @@
 const multer = require("multer");
 const upload = multer({ dest: "public/uploads/" });
-const uploadRepository = require("../lib/repositories/upload.repository.js");
+const fileRepository = require("../lib/repositories/file.repository.js");
 
 function uploadFile(req, res, next) {
   upload.single("file")(req, res, async (err) => {
@@ -9,7 +9,7 @@ function uploadFile(req, res, next) {
     }
 
     try {
-      await uploadRepository.createFile({
+      await fileRepository.createFile({
         name: req.file.originalname,
         mimetype: req.file.mimetype,
         path: req.file.path,
