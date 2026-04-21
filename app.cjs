@@ -31,6 +31,7 @@ app.use(
 );
 app.use(passport.session());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
 app.use(expressLayouts);
 app.use("/", indexRouter);
 app.use("/", authRouter);
