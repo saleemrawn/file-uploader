@@ -15,7 +15,7 @@ function uploadFile(req, res, next) {
         path: req.file.path,
         size: req.file.size,
         ownerId: Number(req.body.ownerId),
-        folderId: null,
+        folderId: Number(req.body.folder),
       });
 
       res.redirect("/");
