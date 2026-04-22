@@ -14,6 +14,13 @@ function renderCreateFolder(req, res) {
   res.render("createFolder", { title: "New Folder" });
 }
 
+async function renderEditFolder(req, res) {
+  const folderId = Number(req.params.folderId);
+  const folder = await folderRepository.getFolderById(folderId);
+
+  res.render("folderForm", { title: "Edit Folder", folder: folder });
+}
+
 async function renderManageFolders(req, res) {
   const folders = await folderRepository.getAllFolders();
   res.render("manageFolders", { title: "Manage Folders", folders: folders });
@@ -31,4 +38,4 @@ async function createFolder(req, res) {
   res.redirect("/folder/manage");
 }
 
-module.exports = { renderCreateFolder, renderManageFolders, createFolder, folderValidators };
+module.exports = { renderCreateFolder, renderEditFolder, renderManageFolders, createFolder, folderValidators };
