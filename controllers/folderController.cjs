@@ -11,7 +11,7 @@ const folderValidators = [
 ];
 
 function renderCreateFolder(req, res) {
-  res.render("createFolder", { title: "New Folder" });
+  res.render("folderForm", { title: "New Folder", folder: {} });
 }
 
 async function renderEditFolder(req, res) {
