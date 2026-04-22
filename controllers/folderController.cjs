@@ -38,4 +38,18 @@ async function createFolder(req, res) {
   res.redirect("/folder/manage");
 }
 
-module.exports = { renderCreateFolder, renderEditFolder, renderManageFolders, createFolder, folderValidators };
+async function updateFolder(req, res) {
+  const folderId = Number(req.params.folderId);
+  const folder = await folderRepository.getFolderById(folderId);
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).render("folderForm", { title: "Edit Folder", folder: folder, errors: errors.array() });
+  }
+
+  const { name } = matchedData(req);
+  await folderRepository.updateFolder({ name: name, folderId: Number(req.params.folderId) });
+  res.redirect("/folder/manage");
+}
+
+module.exports = { renderCreateFolder, renderEditFolder, renderManageFolders, createFolder, updateFolder, folderValidators };
