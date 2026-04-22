@@ -52,4 +52,10 @@ async function updateFolder(req, res) {
   res.redirect("/folder/manage");
 }
 
-module.exports = { renderCreateFolder, renderEditFolder, renderManageFolders, createFolder, updateFolder, folderValidators };
+async function deleteFolder(req, res) {
+  const folderId = Number(req.params.folderId);
+  await folderRepository.deleteFolder(folderId);
+  res.redirect("/folder/manage");
+}
+
+module.exports = { renderCreateFolder, renderEditFolder, renderManageFolders, createFolder, updateFolder, deleteFolder, folderValidators };
