@@ -25,4 +25,17 @@ function uploadFile(req, res, next) {
   });
 }
 
-module.exports = { uploadFile };
+async function getFilesByFolderId(req, res) {
+  const folderId = Number(req.params.folderId);
+  const files = await fileRepository.getFilesByFolderId(folderId);
+
+  if (!files || files.length === 0) {
+    const error = { statusCode: 404, message: "Folder not found" };
+    return res.status(404).render("customError", { title: `${error.statusCode} | ${error.message}`, error: error });
+  }
+
+  const title = files[0]?.folder.name;
+  res.render("folder", { title: title, files: files });
+}
+
+module.exports = { uploadFile, getFilesByFolderId };
