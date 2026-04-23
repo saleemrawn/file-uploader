@@ -38,4 +38,8 @@ async function getFilesByFolderId(req, res) {
   res.render("folder", { title: title, files: files });
 }
 
-module.exports = { uploadFile, getFilesByFolderId };
+function renderUploadFile(req, res) {
+  res.render("upload", { title: "Upload file" });
+}
+
+module.exports = { uploadFile, getFilesByFolderId, renderUploadFile };
