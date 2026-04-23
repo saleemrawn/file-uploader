@@ -3,7 +3,7 @@ const fileRepository = require("../lib/repositories/file.repository.js");
 
 async function getHomepage(req, res) {
   const folders = await folderRepository.getAllFolders();
-  res.render("index", { title: "Upload File", folders: folders });
+  res.render("index", { title: "Welcome", folders: folders });
 }
 
 async function renderRecentFiles(req, res) {
