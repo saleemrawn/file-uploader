@@ -39,7 +39,7 @@ async function getFilesByFolderId(req, res) {
 }
 
 function renderUploadFile(req, res) {
-  res.render("upload", { title: "Upload file" });
+  res.render("fileForm", { title: "Upload file", file: {} });
 }
 
 module.exports = { uploadFile, getFilesByFolderId, renderUploadFile };
