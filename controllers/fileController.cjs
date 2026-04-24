@@ -42,4 +42,11 @@ function renderUploadFile(req, res) {
   res.render("fileForm", { title: "Upload file", file: {} });
 }
 
-module.exports = { uploadFile, getFilesByFolderId, renderUploadFile };
+async function renderEditFile(req, res) {
+  const fileId = Number(req.params.fileId);
+  const file = await fileRepository.getFileById(fileId);
+
+  res.render("fileForm", { title: "Edit file", file: file });
+}
+
+module.exports = { uploadFile, getFilesByFolderId, renderUploadFile, renderEditFile };
