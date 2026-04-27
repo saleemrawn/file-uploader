@@ -49,4 +49,13 @@ async function renderEditFile(req, res) {
   res.render("fileForm", { title: "Edit file", file: file });
 }
 
-module.exports = { uploadFile, getFilesByFolderId, renderUploadFile, renderEditFile };
+async function updateFileFolder(req, res) {
+  const fileId = Number(req.body.fileId);
+  const folderId = Number(req.body.folder);
+  const ownerId = Number(req.body.ownerId);
+
+  await fileRepository.updateFileFolderById({ fileId: fileId, folderId: folderId, ownerId: ownerId });
+  res.redirect(`/folder/${folderId}`);
+}
+
+module.exports = { uploadFile, getFilesByFolderId, renderUploadFile, renderEditFile, updateFileFolder };
