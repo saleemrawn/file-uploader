@@ -22,8 +22,7 @@ async function renderEditFolder(req, res) {
 }
 
 async function renderManageFolders(req, res) {
-  const folders = await folderRepository.getAllFolders();
-  res.render("manageFolders", { title: "Manage Folders", folders: folders });
+  res.render("manageFolders", { title: "Manage Folders" });
 }
 
 async function createFolder(req, res) {
