@@ -39,9 +39,9 @@ function logoutUser(req, res, next) {
     if (err) {
       return next(err);
     }
-  });
 
-  res.redirect("/");
+    res.redirect("/");
+  });
 }
 
 module.exports = { getSignUp, getLogin, createUserAccount, logoutUser, userValidators };
