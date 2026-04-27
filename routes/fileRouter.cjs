@@ -3,6 +3,9 @@ const fileRouter = Router();
 const fileController = require("../controllers/fileController.cjs");
 
 fileRouter.get("/upload", fileController.renderUploadFile);
+fileRouter.get("/edit/:fileId", fileController.renderEditFile);
+
 fileRouter.post("/upload", fileController.uploadFile);
+fileRouter.post("/edit/:fileId", fileController.updateFileFolder);
 
 module.exports = fileRouter;
