@@ -58,4 +58,12 @@ async function updateFileFolder(req, res) {
   res.redirect(`/folder/${folderId}`);
 }
 
-module.exports = { uploadFile, getFilesByFolderId, renderUploadFile, renderEditFile, updateFileFolder };
+async function deleteFile(req, res) {
+  const fileId = Number(req.params.fileId);
+  await fileRepository.deleteFileById(fileId);
+
+  const path = req.body.folderId ? `/folder/${req.body.folderId}` : "/";
+  res.redirect(path);
+}
+
+module.exports = { uploadFile, getFilesByFolderId, renderUploadFile, renderEditFile, updateFileFolder, deleteFile };
