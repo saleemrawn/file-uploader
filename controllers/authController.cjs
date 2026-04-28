@@ -12,7 +12,7 @@ const userValidators = [
     .withMessage("Password must be minimum 8 characters, with at least one lowercase letter, one uppercase letter, one number, one symbol"),
 ];
 
-function getSignUp(req, res) {
+function renderSignUp(req, res) {
   res.render("sign-up", { title: "Sign-Up" });
 }
 
@@ -44,4 +44,4 @@ function logoutUser(req, res, next) {
   });
 }
 
-module.exports = { getSignUp, getLogin, createUserAccount, logoutUser, userValidators };
+module.exports = { renderSignUp, getLogin, createUserAccount, logoutUser, userValidators };
