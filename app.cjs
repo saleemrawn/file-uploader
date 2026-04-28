@@ -7,6 +7,7 @@ const expressLayouts = require("express-ejs-layouts");
 const session = require("express-session");
 const passport = require("passport");
 const folderRepository = require("./lib/repositories/folder.repository.js");
+const fileRepository = require("./lib/repositories/file.repository.js");
 const folderRouter = require("./routes/folderRouter.cjs");
 const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
 const { prisma } = require("./lib/prisma.js");
@@ -40,6 +41,7 @@ app.use(async (req, res, next) => {
 
   try {
     res.locals.folders = req.user ? await folderRepository.getAllFoldersByOwnerId(req.user.id) : [];
+    res.locals.files = req.user ? await fileRepository.getAllFilesByOwnerId(req.user.id) : [];
   } catch (err) {
     return next(err);
   }
