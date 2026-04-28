@@ -10,6 +10,18 @@ const folderValidators = [
     .withMessage("Folder name must contain letters and numbers only"),
 ];
 
+async function renderFolder(req, res) {
+  const folderId = Number(req.params.folderId);
+  const folder = await folderRepository.getFolderById(folderId);
+
+  if (!folder || folder.length === 0) {
+    const error = { statusCode: 404, message: "Folder not found" };
+    return res.status(404).render("customError", { title: `${error.statusCode} | ${error.message}`, error: error });
+  }
+
+  res.render("folder", { title: folder.name, folder: folder });
+}
+
 function renderCreateFolder(req, res) {
   res.render("folderForm", { title: "New Folder", folder: {} });
 }
@@ -57,4 +69,13 @@ async function deleteFolder(req, res) {
   res.redirect("/folder/manage");
 }
 
-module.exports = { renderCreateFolder, renderEditFolder, renderManageFolders, createFolder, updateFolder, deleteFolder, folderValidators };
+module.exports = {
+  renderFolder,
+  renderCreateFolder,
+  renderEditFolder,
+  renderManageFolders,
+  createFolder,
+  updateFolder,
+  deleteFolder,
+  folderValidators,
+};
