@@ -1,9 +1,8 @@
-const folderRepository = require("../lib/repositories/folder.repository.js");
 const fileRepository = require("../lib/repositories/file.repository.js");
 
 async function getHomepage(req, res) {
-  const files = await fileRepository.getAllFilesByOwnerId();
-  res.render("index", { title: "Welcome", files: files.slice(0, 5) });
+  const title = req.user ? "Dashboard" : "Simple & Easy File Uploader";
+  res.render("index", { title: title });
 }
 
 async function renderRecentFiles(req, res) {
