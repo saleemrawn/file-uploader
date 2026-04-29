@@ -39,14 +39,14 @@ async function getFilesByFolderId(req, res) {
 }
 
 function renderUploadFile(req, res) {
-  res.render("fileForm", { title: "Upload file", file: {} });
+  res.render("fileForm", { title: "Upload File", file: {} });
 }
 
 async function renderEditFile(req, res) {
   const fileId = Number(req.params.fileId);
   const file = await fileRepository.getFileById(fileId);
 
-  res.render("fileForm", { title: "Edit file", file: file });
+  res.render("fileForm", { title: "Edit File", file: file });
 }
 
 async function updateFileFolder(req, res) {
