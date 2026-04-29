@@ -1,0 +1,23 @@
+<div class="p-2 mt-4 p-lg-5 mt-lg-0">
+  <h1 class="mb-3"><%= title %></h1>
+  <%- include("./partials/errors.ejs") %>
+
+  <form action="<%= folder.id ? `/folder/edit/${folder.id}` : '/folder/create' %>" method="post">
+    <input type="hidden" name="ownerId" value="<%= currentUser.id %>" />
+
+    <div class="mb-4">
+      <label for="name" class="form-label">Name</label>
+      <input type="text" name="name" id="name" class="form-control" value="<%= folder.name || '' %>" />
+    </div>
+
+    <div class="d-flex gap-2">
+      <button type="submit" class="btn btn-primary"><%= folder.id ? "Save" : "Create" %></button>
+      <% if (folder.id) { %>
+       <form action="/folder/delete/<%= folder.id %>" method="post" class="d-none d-md-block">
+        <button type="submit" class="btn btn-danger" onclick="return confirm(`Are you sure you want to delete the folder?`)">Delete</button>
+      </form>
+      <% } %>
+    </div>
+  </form>
+
+</div>
