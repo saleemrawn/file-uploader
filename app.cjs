@@ -38,6 +38,7 @@ app.use(express.static("public"));
 app.use(expressLayouts);
 app.use(async (req, res, next) => {
   res.locals.currentUser = req.user;
+  res.locals.urlPath = req.path;
 
   try {
     res.locals.folders = req.user ? await folderRepository.getAllFoldersByOwnerId(req.user.id) : [];
