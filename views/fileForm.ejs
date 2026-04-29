@@ -1,0 +1,53 @@
+<div class="p-2 mt-4 p-lg-5 mt-lg-0">
+  <h1 class="mb-4"><%= title %></h1>
+  <%- include("./partials/errors.ejs") %>
+  
+  <form action="<%= file.id ? `/file/edit/${file.id}` : '/file/upload' %>" method="post" enctype="<%= file.id ? 'application/x-www-form-urlencoded' : 'multipart/form-data' %>">
+    <input type="hidden" name="ownerId" value="<%= currentUser.id %> ">
+
+    <% if (file.id) { %>
+        <input type="hidden" name="fileId" value="<%= file.id %> ">
+        <div class="row mb-4">
+            <div class="col">
+                <div>Filename</div>
+                <div><%= file.name %></div>
+            </div>
+        </div>
+    <% } else { %>
+    <div class="mb-4">
+      <label for="file" class="form-label">File</label>
+      <input
+        type="file"
+        name="file"
+        id="file"
+        class="form-control"
+        accept=".jpg, .png, .jpeg, .pdf .doc, .docx, .xml, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document" aria-describedby="fileHelpBlock"  />
+      <div id="fileHelpBlock" class="form-text mt-2">
+        Accepted file types: .jpg, .png, .jpeg, .pdf .doc, .docx, .xml
+      </div>
+    </div>
+    <% } %>
+
+    <% if (locals.folders) { %>
+      <div class="mb-4">
+        <label for="folder" class="form-label">Folder</label>
+        <select name="folder" id="folder" class="form-select" aria-label="Select a folder">
+          <option>-- Select a folder --</option>
+          <% folders.forEach(folder => { %>
+           <option value="<%= folder.id %>" <%= folder.id === file.folder?.id ? "selected" : "" %>><%= folder.name %></option>
+          <% }) %>
+        </select>
+      </div>
+    <% } %>
+
+    <div class="d-flex gap-2">
+      <button type="submit" class="btn btn-primary"><%= file.id ? "Save" : "Upload" %></button>
+  </form>
+  <% if (file.id) { %>
+      <form action="/file/delete/<%= file.id %>" method="post">
+        <input type="hidden" name="folderId" value="<%= file.folder?.id %>">
+        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete the file?')">Delete</button>
+      </form>
+  <% } %>
+    </div>
+</div>
