@@ -1,0 +1,69 @@
+<div class="p-2 mt-4 p-lg-5 mt-lg-0">
+  <div class="d-flex justify-content-between align-items-center mb-5">
+    <h1 class="mb-0"><%= title %></h1>
+    <% if (locals.currentUser) { %>
+       <a href="/file/upload" class="btn btn-primary d-flex align-items-center gap-2">
+        <img src="/icons/upload.svg" alt="" class="filter-white btn-icon-24" />
+        Upload File
+      </a>
+    <% } %> 
+  </div>
+
+
+  <% if (locals.currentUser) { %>
+    <div class="mb-5">
+    <div class="d-flex justify-content-between justify-content-lg-start align-items-center gap-4 mb-3">
+      <h2 class="mb-0">Folders</h2>
+      <a href="/folder/create" class="btn btn-secondary btn-sm d-flex align-items-center gap-1">
+        <img src="/icons/plus.svg" alt="" class="filter-white">Add folder
+      </a>
+    </div>
+
+    <% if (locals.folders.length <= 0) { %>
+     <div>No folders added</div>
+    <% } else { %>
+          <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-2">
+            <% folders.forEach(folder => { %>
+              <div class="col">
+                <div class="card">
+                  <div class="card-body">
+                      <div class="card-text d-flex align-items-center">
+                        <a href="/folder/<%= folder.id %>" class="link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover d-flex gap-2">
+                          <img src="/icons/folder.svg" alt=""><%= folder.name %>
+                        </a>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+    <% } %>
+    </div>
+
+    <div class="mb-5">
+      <div class="d-flex justify-content-between justify-content-lg-start align-items-center gap-4 mb-3">
+        <h2 class="mb-0">Recent</h2>
+        <a href="/file/upload" class=" btn btn-secondary btn-sm d-flex align-items-center gap-1">
+          <img src="/icons/plus.svg" alt="" class="filter-white">Add file
+        </a>
+      </div>
+
+      <% if (locals.files.length > 0) { %>
+        <%- include("./partials/recentFilesList.ejs") %> 
+      <% } else { %>
+        <div>No files added</div>
+      <% } %>
+    </div>
+
+  <% } else { %>
+    <div class="d-flex align-items-center gap-3">
+      <a href="/sign-up" class="btn btn-primary btn-lg d-flex align-items-center gap-2">
+        <img src="/icons/house.svg" alt="" class="filter-white btn-icon-24">Sign-Up
+      </a>
+      <div>or</div>
+      <a href="/login" class="btn btn-primary btn-lg d-flex align-items-center gap-2">
+        <img src="/icons/log-out.svg" alt="" class="filter-white btn-icon-24">Login
+      </a>
+    </div>
+  <% } %>
+</div>
