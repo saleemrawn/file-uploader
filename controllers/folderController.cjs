@@ -23,7 +23,7 @@ async function renderFolder(req, res) {
 }
 
 function renderCreateFolder(req, res) {
-  res.render("folderForm", { title: "New Folder", folder: {} });
+  res.render("folderForm", { title: "Create Folder", folder: {} });
 }
 
 async function renderEditFolder(req, res) {
