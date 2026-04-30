@@ -1,27 +1,65 @@
+const path = require("node:path");
 const multer = require("multer");
-const upload = multer({ dest: "public/uploads/" });
 const fileRepository = require("../lib/repositories/file.repository.js");
+const upload = multer({
+  dest: "public/uploads/",
+  limits: { fileSize: 655400 /* 5MB */, files: 1 },
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/jpg",
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+    const allowedExtensions = [".jpg", ".jpeg", ".png", ".pdf", ".doc", ".docx", ".xml"];
+    const ext = path.extname(file.originalname).toLowerCase();
+
+    if (!allowedTypes.includes(file.mimetype) || !allowedExtensions.includes(ext)) {
+      return cb(new Error("Invalid file type or extension"));
+    }
+
+    cb(null, true);
+  },
+});
 
 function uploadFile(req, res, next) {
   upload.single("file")(req, res, async (err) => {
-    if (err) {
-      return next(err);
+    if (err instanceof multer.MulterError) {
+      // A Multer error occurred when uploading.
+      if (err.code === "LIMIT_FILE_SIZE") {
+        return res.status(400).render("fileForm", { title: "Upload File", file: {}, errors: [{ msg: "File exceeds 5MB limit" }] });
+      }
+
+      if (err.code === "LIMIT_FILE_COUNT") {
+        return res.status(400).render("fileForm", { title: "Upload File", file: {}, errors: [{ msg: "Upload one file at a time" }] });
+      }
+
+      return res.status(400).render("fileForm", { title: "Upload File", file: {}, errors: [{ msg: err.message }] });
+    } else if (err) {
+      // An unknown error occurred when uploading.
+      return res.status(400).render("fileForm", { title: "Upload File", file: {}, errors: [{ msg: err.message }] });
     }
 
-    try {
-      await fileRepository.createFile({
-        name: req.file.originalname,
-        mimetype: req.file.mimetype,
-        path: req.file.path,
-        size: req.file.size,
-        ownerId: Number(req.body.ownerId),
-        folderId: Number(req.body.folder),
-      });
-
-      res.redirect("/");
-    } catch (err) {
-      next(err);
+    if (!req.file) {
+      return res.status(400).render("fileForm", { title: "Upload File", file: {}, errors: [{ msg: "File is required" }] });
     }
+
+    if (isNaN(Number(req.body.folder))) {
+      return res.status(400).render("fileForm", { title: "Upload File", file: {}, errors: [{ msg: "Folder is required" }] });
+    }
+
+    await fileRepository.createFile({
+      name: req.file.originalname,
+      mimetype: req.file.mimetype,
+      path: req.file.path,
+      size: req.file.size,
+      ownerId: Number(req.body.ownerId),
+      folderId: Number(req.body.folder),
+    });
+
+    res.redirect("/");
   });
 }
 
