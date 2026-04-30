@@ -41,7 +41,7 @@ async function createFolder(req, res) {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return res.status(400).render("createFolder", { title: "New Folder", errors: errors.array() });
+    return res.status(400).render("folderForm", { title: "Create Folder", folder: {}, errors: errors.array() });
   }
 
   const { name } = matchedData(req);
