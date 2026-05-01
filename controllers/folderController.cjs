@@ -10,63 +10,97 @@ const folderValidators = [
     .withMessage("Folder name must contain letters and numbers only"),
 ];
 
-async function renderFolder(req, res) {
-  const folderId = Number(req.params.folderId);
-  const folder = await folderRepository.getFolderById(folderId);
+async function renderFolder(req, res, next) {
+  try {
+    const folderId = Number(req.params.folderId);
+    const folder = await folderRepository.getFolderById(folderId);
 
-  if (!folder || folder.length === 0) {
-    const error = { statusCode: 404, message: "Folder not found" };
-    return res.status(404).render("customError", { title: `${error.statusCode} | ${error.message}`, error: error });
+    if (!folder) {
+      const err = new Error("Folder not found");
+      err.statusCode = 404;
+      return next(err);
+    }
+
+    res.render("folder", { title: folder.name, folder: folder });
+  } catch (err) {
+    next(err);
   }
-
-  res.render("folder", { title: folder.name, folder: folder });
 }
 
 function renderCreateFolder(req, res) {
   res.render("folderForm", { title: "Create Folder", folder: {} });
 }
 
-async function renderEditFolder(req, res) {
-  const folderId = Number(req.params.folderId);
-  const folder = await folderRepository.getFolderById(folderId);
+async function renderEditFolder(req, res, next) {
+  try {
+    const folderId = Number(req.params.folderId);
+    const folder = await folderRepository.getFolderById(folderId);
 
-  res.render("folderForm", { title: "Edit Folder", folder: folder });
+    if (!folder) {
+      const err = new Error("Folder not found");
+      err.statusCode = 404;
+      return next(err);
+    }
+
+    res.render("folderForm", { title: "Edit Folder", folder: folder });
+  } catch (err) {
+    next(err);
+  }
 }
 
 async function renderManageFolders(req, res) {
   res.render("manageFolders", { title: "Manage Folders" });
 }
 
-async function createFolder(req, res) {
-  const errors = validationResult(req);
+async function createFolder(req, res, next) {
+  try {
+    const errors = validationResult(req);
 
-  if (!errors.isEmpty()) {
-    return res.status(400).render("folderForm", { title: "Create Folder", folder: {}, errors: errors.array() });
+    if (!errors.isEmpty()) {
+      return res.status(400).render("folderForm", { title: "Create Folder", folder: {}, errors: errors.array() });
+    }
+
+    const { name } = matchedData(req);
+    await folderRepository.createFolder({ name: name, ownerId: Number(req.body.ownerId) });
+
+    res.redirect("/folder/manage");
+  } catch (err) {
+    next(err);
   }
-
-  const { name } = matchedData(req);
-  await folderRepository.createFolder({ name: name, ownerId: Number(req.body.ownerId) });
-  res.redirect("/folder/manage");
 }
 
-async function updateFolder(req, res) {
-  const folderId = Number(req.params.folderId);
-  const folder = await folderRepository.getFolderById(folderId);
+async function updateFolder(req, res, next) {
+  try {
+    const folderId = Number(req.params.folderId);
+    const folder = await folderRepository.getFolderById(folderId);
+    const errors = validationResult(req);
 
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).render("folderForm", { title: "Edit Folder", folder: folder, errors: errors.array() });
+    if (!folder) {
+      const err = new Error("Folder not found");
+      err.statusCode = 404;
+      return next(err);
+    }
+
+    if (!errors.isEmpty()) {
+      return res.status(400).render("folderForm", { title: "Edit Folder", folder: folder, errors: errors.array() });
+    }
+
+    const { name } = matchedData(req);
+    await folderRepository.updateFolder({ name: name, folderId: Number(req.params.folderId) });
+    res.redirect("/folder/manage");
+  } catch (err) {
+    next(err);
   }
-
-  const { name } = matchedData(req);
-  await folderRepository.updateFolder({ name: name, folderId: Number(req.params.folderId) });
-  res.redirect("/folder/manage");
 }
 
-async function deleteFolder(req, res) {
-  const folderId = Number(req.params.folderId);
-  await folderRepository.deleteFolder(folderId);
-  res.redirect("/folder/manage");
+async function deleteFolder(req, res, next) {
+  try {
+    const folderId = Number(req.params.folderId);
+    await folderRepository.deleteFolder(folderId);
+    res.redirect("/folder/manage");
+  } catch (err) {
+    next(err);
+  }
 }
 
 module.exports = {

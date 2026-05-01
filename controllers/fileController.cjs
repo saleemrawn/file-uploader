@@ -26,40 +26,44 @@ const upload = multer({
 
 function uploadFile(req, res, next) {
   upload.single("file")(req, res, async (err) => {
-    if (err instanceof multer.MulterError) {
-      // A Multer error occurred when uploading.
-      if (err.code === "LIMIT_FILE_SIZE") {
-        return res.status(400).render("fileForm", { title: "Upload File", file: {}, errors: [{ msg: "File exceeds 5MB limit" }] });
+    try {
+      if (err instanceof multer.MulterError) {
+        // A Multer error occurred when uploading.
+        if (err.code === "LIMIT_FILE_SIZE") {
+          return res.status(400).render("fileForm", { title: "Upload File", file: {}, errors: [{ msg: "File exceeds 5MB limit" }] });
+        }
+
+        if (err.code === "LIMIT_FILE_COUNT") {
+          return res.status(400).render("fileForm", { title: "Upload File", file: {}, errors: [{ msg: "Upload one file at a time" }] });
+        }
+
+        return res.status(400).render("fileForm", { title: "Upload File", file: {}, errors: [{ msg: err.message }] });
+      } else if (err) {
+        // An unknown error occurred when uploading.
+        return res.status(400).render("fileForm", { title: "Upload File", file: {}, errors: [{ msg: err.message }] });
       }
 
-      if (err.code === "LIMIT_FILE_COUNT") {
-        return res.status(400).render("fileForm", { title: "Upload File", file: {}, errors: [{ msg: "Upload one file at a time" }] });
+      if (!req.file) {
+        return res.status(400).render("fileForm", { title: "Upload File", file: {}, errors: [{ msg: "File is required" }] });
       }
 
-      return res.status(400).render("fileForm", { title: "Upload File", file: {}, errors: [{ msg: err.message }] });
-    } else if (err) {
-      // An unknown error occurred when uploading.
-      return res.status(400).render("fileForm", { title: "Upload File", file: {}, errors: [{ msg: err.message }] });
+      if (isNaN(Number(req.body.folder))) {
+        return res.status(400).render("fileForm", { title: "Upload File", file: {}, errors: [{ msg: "Folder is required" }] });
+      }
+
+      await fileRepository.createFile({
+        name: req.file.originalname,
+        mimetype: req.file.mimetype,
+        path: req.file.path,
+        size: req.file.size,
+        ownerId: Number(req.body.ownerId),
+        folderId: Number(req.body.folder),
+      });
+
+      res.redirect("/");
+    } catch (err) {
+      next(err);
     }
-
-    if (!req.file) {
-      return res.status(400).render("fileForm", { title: "Upload File", file: {}, errors: [{ msg: "File is required" }] });
-    }
-
-    if (isNaN(Number(req.body.folder))) {
-      return res.status(400).render("fileForm", { title: "Upload File", file: {}, errors: [{ msg: "Folder is required" }] });
-    }
-
-    await fileRepository.createFile({
-      name: req.file.originalname,
-      mimetype: req.file.mimetype,
-      path: req.file.path,
-      size: req.file.size,
-      ownerId: Number(req.body.ownerId),
-      folderId: Number(req.body.folder),
-    });
-
-    res.redirect("/");
   });
 }
 
@@ -80,28 +84,46 @@ function renderUploadFile(req, res) {
   res.render("fileForm", { title: "Upload File", file: {} });
 }
 
-async function renderEditFile(req, res) {
-  const fileId = Number(req.params.fileId);
-  const file = await fileRepository.getFileById(fileId);
+async function renderEditFile(req, res, next) {
+  try {
+    const fileId = Number(req.params.fileId);
+    const file = await fileRepository.getFileById(fileId);
 
-  res.render("fileForm", { title: "Edit File", file: file });
+    if (!file) {
+      const err = new Error("File not found");
+      err.statusCode = 404;
+      return next(err);
+    }
+
+    res.render("fileForm", { title: "Edit File", file: file });
+  } catch (err) {
+    next(err);
+  }
 }
 
-async function updateFileFolder(req, res) {
-  const fileId = Number(req.body.fileId);
-  const folderId = Number(req.body.folder);
-  const ownerId = Number(req.body.ownerId);
+async function updateFileFolder(req, res, next) {
+  try {
+    const fileId = Number(req.body.fileId);
+    const folderId = Number(req.body.folder);
+    const ownerId = Number(req.body.ownerId);
 
-  await fileRepository.updateFileFolderById({ fileId: fileId, folderId: folderId, ownerId: ownerId });
-  res.redirect(`/folder/${folderId}`);
+    await fileRepository.updateFileFolderById({ fileId: fileId, folderId: folderId, ownerId: ownerId });
+    res.redirect(`/folder/${folderId}`);
+  } catch (err) {
+    next(err);
+  }
 }
 
-async function deleteFile(req, res) {
-  const fileId = Number(req.params.fileId);
-  await fileRepository.deleteFileById(fileId);
+async function deleteFile(req, res, next) {
+  try {
+    const fileId = Number(req.params.fileId);
+    await fileRepository.deleteFileById(fileId);
 
-  const path = req.body.folderId ? `/folder/${req.body.folderId}` : "/";
-  res.redirect(path);
+    const path = req.body.folderId ? `/folder/${req.body.folderId}` : "/";
+    res.redirect(path);
+  } catch (err) {
+    next(err);
+  }
 }
 
 module.exports = { uploadFile, getFilesByFolderId, renderUploadFile, renderEditFile, updateFileFolder, deleteFile };

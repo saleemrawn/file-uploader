@@ -20,18 +20,22 @@ function renderLogin(req, res) {
   res.render("login", { title: "Login" });
 }
 
-async function createUserAccount(req, res) {
-  const errors = validationResult(req);
+async function createUserAccount(req, res, next) {
+  try {
+    const errors = validationResult(req);
 
-  if (!errors.isEmpty()) {
-    return res.status(400).render("sign-up", { title: "Sign-Up", errors: errors.array() });
+    if (!errors.isEmpty()) {
+      return res.status(400).render("sign-up", { title: "Sign-Up", errors: errors.array() });
+    }
+
+    const { username, password } = matchedData(req);
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await userRepository.createUser(username, hashedPassword);
+
+    res.redirect("/login");
+  } catch (err) {
+    next(err);
   }
-
-  const { username, password } = matchedData(req);
-  const hashedPassword = await bcrypt.hash(password, 10);
-  await userRepository.createUser(username, hashedPassword);
-
-  res.redirect("/login");
 }
 
 function logoutUser(req, res, next) {

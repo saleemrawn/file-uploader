@@ -5,10 +5,14 @@ async function renderHomepage(req, res) {
   res.render("index", { title: title });
 }
 
-async function renderRecentFiles(req, res) {
-  const ownerId = Number(req.user.id);
-  const files = await fileRepository.getAllFilesByOwnerId(ownerId);
-  res.render("recent", { title: "Recent", files: files });
+async function renderRecentFiles(req, res, next) {
+  try {
+    const ownerId = Number(req.user.id);
+    const files = await fileRepository.getAllFilesByOwnerId(ownerId);
+    res.render("recent", { title: "Recent", files: files });
+  } catch (err) {
+    next(err);
+  }
 }
 
 module.exports = { renderHomepage, renderRecentFiles };
