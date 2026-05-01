@@ -1,0 +1,6 @@
+<div class="text-center p-2 mt-4 p-lg-5 mt-lg-0">
+    <% if(locals.error) { %>
+        <h1><%= error.statusCode %> - <%= error.message %></h1>
+         <a href="javascript: history.back()" class="btn btn-primary">Go back</a>
+    <% } %>
+</div>
