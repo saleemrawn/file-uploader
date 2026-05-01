@@ -53,6 +53,14 @@ app.use("/", indexRouter);
 app.use("/", authRouter);
 app.use("/file", fileRouter);
 app.use("/folder", folderRouter);
+app.use((err, req, res, next) => {
+  console.error(err);
+
+  res.status(err.statusCode || 500).render("customError", {
+    title: `${err.statusCode || 500} | ${err.message}`,
+    error: { statusCode: err.statusCode || 500, message: err.message },
+  });
+});
 
 app.listen(port, (error) => {
   if (error) {
