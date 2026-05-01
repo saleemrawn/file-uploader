@@ -56,9 +56,12 @@ app.use("/folder", folderRouter);
 app.use((err, req, res, next) => {
   console.error(err);
 
-  res.status(err.statusCode || 500).render("customError", {
-    title: `${err.statusCode || 500} | ${err.message}`,
-    error: { statusCode: err.statusCode || 500, message: err.message },
+  const statusCode = err.statusCode || err.status || 500;
+  const message = err.message || "Oops, something went wrong";
+
+  res.status(statusCode).render("customError", {
+    title: `${statusCode} | ${message}`,
+    error: { statusCode, message },
   });
 });
 
