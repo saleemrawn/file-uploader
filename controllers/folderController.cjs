@@ -48,7 +48,7 @@ async function renderEditFolder(req, res, next) {
   }
 }
 
-async function renderManageFolders(req, res) {
+function renderManageFolders(req, res) {
   res.render("manageFolders", { title: "Manage Folders" });
 }
 

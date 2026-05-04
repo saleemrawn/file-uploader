@@ -1,6 +1,6 @@
 const fileRepository = require("../lib/repositories/file.repository.js");
 
-async function renderHomepage(req, res) {
+function renderHomepage(req, res) {
   const title = req.user ? "Dashboard" : "Simple & Easy File Uploader";
   res.render("index", { title: title });
 }
