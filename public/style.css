@@ -1,0 +1,28 @@
+body {
+  font-family: "Google Sans", Arial, Helvetica, sans-serif;
+}
+
+select,
+option {
+  font-family: inherit;
+}
+
+.filter-white {
+  filter: brightness(0) invert(1);
+}
+
+.heading-icon-40 {
+  width: 2.5rem;
+  height: auto;
+}
+
+.btn-icon-24 {
+  width: 1.5rem;
+  height: auto;
+}
+
+@media (min-width: 992px) {
+  .vh-lg-100 {
+    height: 100vh !important;
+  }
+}
