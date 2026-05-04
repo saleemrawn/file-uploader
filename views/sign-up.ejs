@@ -1,15 +1,21 @@
-<h1><%= title %></h1>
-<%- include("./partials/errors.ejs") %>
-<form action="/sign-up" method="post">
-  <div>
-    <label for="username">Username</label>
-    <input type="text" name="username" id="username" required />
-  </div>
+<div class="p-2 mt-4 p-lg-5 mt-lg-0">
+  <h1 class="mb-3"><%= title %></h1>
+  <%- include("./partials/errors.ejs") %>
+  <form action="/sign-up" method="post">
+    <div class="mb-5">
+      <label for="username" class="form-label">Username</label>
+      <input type="text" name="username" id="username" class="form-control" aria-describedby="usernameHelp" required />
+      <div id="usernameHelp" class="form-text">Username must contain letters and numbers only.</div>
+    </div>
 
-  <div>
-    <label for="password">Password</label>
-    <input type="password" name="password" id="password" required />
-  </div>
+    <div class="mb-5">
+      <label for="password" class="form-label">Password</label>
+      <input type="password" name="password" id="password" class="form-control" aria-describedby="passwordHelp" required />
+      <div id="passwordHelp" class="form-text">
+        Password must be minimum 8 characters, with at least one lowercase letter, one uppercase letter, one number, one symbol
+      </div>
+    </div>
 
-  <button type="submit">Create account</button>
-</form>
+    <button type="submit" class="btn btn-primary">Create</button>
+  </form>
+</div>
