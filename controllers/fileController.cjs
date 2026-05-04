@@ -126,4 +126,14 @@ async function deleteFile(req, res, next) {
   }
 }
 
-module.exports = { uploadFile, getFilesByFolderId, renderUploadFile, renderEditFile, updateFileFolder, deleteFile };
+async function downloadFile(req, res, next) {
+  const fileId = Number(req.params.fileId);
+  const file = await fileRepository.getFileById(fileId);
+  res.download(file.path, file.name, (err) => {
+    if (err) {
+      return next(err);
+    }
+  });
+}
+
+module.exports = { uploadFile, getFilesByFolderId, renderUploadFile, renderEditFile, updateFileFolder, deleteFile, downloadFile };
