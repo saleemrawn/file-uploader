@@ -59,6 +59,13 @@ app.use((err, req, res, next) => {
   const statusCode = err.statusCode || err.status || 500;
   const message = err.message || "Oops, something went wrong";
 
+  if (err.code === "ENOENT") {
+    return res.status(statusCode).render("customError", {
+      title: `${statusCode} | ${message}`,
+      error: { statusCode, message: "No such file or directory" },
+    });
+  }
+
   res.status(statusCode).render("customError", {
     title: `${statusCode} | ${message}`,
     error: { statusCode, message },
