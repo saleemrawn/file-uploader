@@ -93,7 +93,8 @@ async function getFilesByFolderId(req, res) {
 }
 
 function renderUploadFile(req, res) {
-  res.render("fileForm", { title: "Upload File", file: {} });
+  const folderId = req.query.folderId ? Number(req.query.folderId) : null;
+  res.render("fileForm", { title: "Upload File", file: {}, folderId: folderId });
 }
 
 async function renderEditFile(req, res, next) {
