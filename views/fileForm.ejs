@@ -32,9 +32,9 @@
       <div class="mb-4">
         <label for="folder" class="form-label">Folder</label>
         <select name="folder" id="folder" class="form-select" aria-label="Select a folder">
-          <option>-- Select a folder --</option>
+          <option value="">-- Select a folder --</option>
           <% folders.forEach(folder => { %>
-           <option value="<%= folder.id %>" <%= folder.id === file.folder?.id ? "selected" : "" %>><%= folder.name %></option>
+           <option value="<%= folder.id %>" <%= folder.id === folderId ? "selected" : "" %>><%= folder.name %></option>
           <% }) %>
         </select>
       </div>
