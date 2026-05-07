@@ -56,7 +56,7 @@ app.use("/folder", folderRouter);
 app.use((err, req, res, next) => {
   console.error(err);
 
-  const statusCode = err.statusCode || err.status || 500;
+  const statusCode = Number(err.statusCode) || err.status || 500;
   const message = err.message || "Oops, something went wrong";
 
   if (err.code === "ENOENT") {
