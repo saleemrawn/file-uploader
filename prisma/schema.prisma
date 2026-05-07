@@ -36,6 +36,7 @@ model File {
   name        String
   mimetype    String
   path        String
+  bucket      String
   size        BigInt
   owner       User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId     Int
@@ -44,6 +45,7 @@ model File {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
+  @@unique([path, bucket])
   @@map("file")
 }
 
