@@ -1,8 +1,11 @@
 const path = require("node:path");
 const multer = require("multer");
 const fileRepository = require("../lib/repositories/file.repository.js");
+const { createClient } = require("@supabase/supabase-js");
+const { v4: uuidv4 } = require("uuid");
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY);
 const upload = multer({
-  dest: "public/uploads/",
+  storage: multer.memoryStorage(),
   limits: { fileSize: 655400 /* 5MB */, files: 1 },
   fileFilter: (req, file, cb) => {
     const allowedTypes = [
@@ -24,37 +27,27 @@ const upload = multer({
   },
 });
 
-function uploadFile(req, res, next) {
+async function uploadFile(req, res, next) {
   upload.single("file")(req, res, async (err) => {
     try {
-      if (err instanceof multer.MulterError) {
-        // A Multer error occurred when uploading.
-        if (err.code === "LIMIT_FILE_SIZE") {
-          return res.status(400).render("fileForm", { title: "Upload File", file: {}, errors: [{ msg: "File exceeds 5MB limit" }] });
-        }
+      if (err instanceof multer.MulterError) return handleMulterError(err, res);
+      if (err) return renderFormError(res, err.message);
+      if (!req.file) return renderFormError(res, "File is required");
+      if (isNaN(Number(req.body.folder))) return renderFormError(res, "Folder is required");
 
-        if (err.code === "LIMIT_FILE_COUNT") {
-          return res.status(400).render("fileForm", { title: "Upload File", file: {}, errors: [{ msg: "Upload one file at a time" }] });
-        }
+      const bucketName = getBucketName(req.file.mimetype);
+      const filename = `public/${uuidv4()}-${req.file.originalname}`;
 
-        return res.status(400).render("fileForm", { title: "Upload File", file: {}, errors: [{ msg: err.message }] });
-      } else if (err) {
-        // An unknown error occurred when uploading.
-        return res.status(400).render("fileForm", { title: "Upload File", file: {}, errors: [{ msg: err.message }] });
-      }
+      const { data, error } = await supabase.storage
+        .from(bucketName)
+        .upload(filename, req.file.buffer, { contentType: req.file.mimetype });
 
-      if (!req.file) {
-        return res.status(400).render("fileForm", { title: "Upload File", file: {}, errors: [{ msg: "File is required" }] });
-      }
-
-      if (isNaN(Number(req.body.folder))) {
-        return res.status(400).render("fileForm", { title: "Upload File", file: {}, errors: [{ msg: "Folder is required" }] });
-      }
+      if (error) return next(error);
 
       await fileRepository.createFile({
         name: req.file.originalname,
         mimetype: req.file.mimetype,
-        path: req.file.path,
+        path: data.fullPath,
         size: req.file.size,
         ownerId: Number(req.body.ownerId),
         folderId: Number(req.body.folder),
@@ -65,6 +58,24 @@ function uploadFile(req, res, next) {
       next(err);
     }
   });
+}
+
+function getBucketName(mimetype) {
+  if (mimetype.startsWith("images/")) return "Images";
+  return "Documents";
+}
+
+function handleMulterError(err, res) {
+  const messages = {
+    LIMIT_FILE_SIZE: "File exceeds 5MB limit",
+    LIMIT_FILE_COUNT: "Upload one file at a time",
+  };
+
+  return renderFormError(res, messages[err.code] ?? err.message);
+}
+
+function renderFormError(res, msg) {
+  return res.status(400).render("fileForm", { title: "Upload file", file: {}, errors: [{ msg }] });
 }
 
 async function getFilesByFolderId(req, res) {
@@ -136,4 +147,12 @@ async function downloadFile(req, res, next) {
   });
 }
 
-module.exports = { uploadFile, getFilesByFolderId, renderUploadFile, renderEditFile, updateFileFolder, deleteFile, downloadFile };
+module.exports = {
+  uploadFile,
+  getFilesByFolderId,
+  renderUploadFile,
+  renderEditFile,
+  updateFileFolder,
+  deleteFile,
+  downloadFile,
+};
