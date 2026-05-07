@@ -34,7 +34,16 @@ app.use(
 );
 app.use(passport.session());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static("public"));
+app.use((req, res, next) => {
+  if (req.url.match(/\.html$/)) return res.set("Cache-Control", "no-cache");
+  next();
+});
+app.use(
+  express.static("public", {
+    maxAge: "1y",
+    immutable: true,
+  }),
+);
 app.use(expressLayouts);
 app.use(async (req, res, next) => {
   res.locals.currentUser = req.user;
