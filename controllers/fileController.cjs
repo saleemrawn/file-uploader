@@ -48,6 +48,7 @@ async function uploadFile(req, res, next) {
         name: req.file.originalname,
         mimetype: req.file.mimetype,
         path: data.fullPath,
+        bucket: bucketName,
         size: req.file.size,
         ownerId: Number(req.body.ownerId),
         folderId: Number(req.body.folder),
