@@ -47,7 +47,7 @@ async function uploadFile(req, res, next) {
       await fileRepository.createFile({
         name: req.file.originalname,
         mimetype: req.file.mimetype,
-        path: data.fullPath,
+        path: data.path,
         bucket: bucketName,
         size: req.file.size,
         ownerId: Number(req.body.ownerId),
