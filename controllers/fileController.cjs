@@ -62,7 +62,7 @@ async function uploadFile(req, res, next) {
 }
 
 function getBucketName(mimetype) {
-  if (mimetype.startsWith("images/")) return "Images";
+  if (mimetype.startsWith("image/")) return "Images";
   return "Documents";
 }
 
