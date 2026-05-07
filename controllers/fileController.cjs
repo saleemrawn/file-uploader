@@ -131,10 +131,8 @@ async function deleteFile(req, res, next) {
     const fileId = Number(req.params.fileId);
     const file = await fileRepository.getFileById(fileId);
 
-    const { data, error } = await supabase.storage.from(file.bucket).remove([`${file.path}`]);
-
+    const { error } = await supabase.storage.from(file.bucket).remove([`${file.path}`]);
     if (error) return next(error);
-    if (!data || data.length === 0) return next({ statusCode: 404, message: "File not found" });
 
     await fileRepository.deleteFileById(fileId);
 
