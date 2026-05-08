@@ -6,7 +6,7 @@
             <div class="card-text col col-lg-5"><%= file.name %></div>
             <div class="card-text col d-none d-lg-block"><%= bytes(Number(file.size)) %></div>
             <div class="card-text col d-none d-lg-flex align-items-center gap-2">
-            <%- file.folder ? `<img src="/icons/folder.svg" alt="">${file.folder.name}` : "" %>
+            <%- file.folder ? `<a href="/folder/${file.folder.id}" class="link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover d-flex gap-2"><img src="/icons/folder.svg" alt="">${file.folder.name}</a>` : "" %>
             </div>
             <div class="card-text col d-none d-lg-block"><%= date.format(file.createdAt, 'do MMM yyyy - kk:ss') %></div>
             <a href="/file/download/<%= file.id %>" class="btn btn-primary btn-sm col-auto">Download</a>
