@@ -6,7 +6,7 @@ const { v4: uuidv4 } = require("uuid");
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY);
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 655400 /* 5MB */, files: 1 },
+  limits: { fileSize: 5 * 1024 * 1024 /* 5MB */, files: 1 },
   fileFilter: (req, file, cb) => {
     const allowedTypes = [
       "image/jpeg",
