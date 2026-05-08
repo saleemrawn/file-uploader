@@ -11,7 +11,7 @@ async function renderRecentFiles(req, res, next) {
   try {
     const ownerId = Number(req.user.id);
     const files = await fileRepository.getAllFilesByOwnerId(ownerId);
-    res.render("recent", { title: "Recent", files: files });
+    res.render("recent", { title: "Recent", files: files, bytes, date });
   } catch (err) {
     next(err);
   }
