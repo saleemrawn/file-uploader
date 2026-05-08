@@ -1,9 +1,10 @@
 const fileRepository = require("../lib/repositories/file.repository.js");
 const bytes = require("bytes");
+const date = require("date-fns");
 
 function renderHomepage(req, res) {
   const title = req.user ? "Dashboard" : "Simple & Easy File Uploader";
-  res.render("index", { title: title, bytes });
+  res.render("index", { title: title, bytes, date });
 }
 
 async function renderRecentFiles(req, res, next) {

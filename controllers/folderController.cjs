@@ -1,5 +1,6 @@
 const folderRepository = require("../lib/repositories/folder.repository.js");
 const bytes = require("bytes");
+const date = require("date-fns");
 
 const { body, validationResult, matchedData } = require("express-validator");
 
@@ -23,7 +24,7 @@ async function renderFolder(req, res, next) {
       return next(err);
     }
 
-    res.render("folder", { title: folder.name, folder: folder, bytes });
+    res.render("folder", { title: folder.name, folder: folder, bytes, date });
   } catch (err) {
     next(err);
   }
