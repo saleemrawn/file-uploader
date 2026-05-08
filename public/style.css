@@ -21,6 +21,11 @@ option {
   height: auto;
 }
 
+.badge-24 {
+  min-width: 1.5rem;
+  min-height: 1.5rem;
+}
+
 @media (min-width: 992px) {
   .vh-lg-100 {
     height: 100vh !important;

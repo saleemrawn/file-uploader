@@ -31,8 +31,11 @@
 
           <% folders.forEach(folder => { %>
             <li class="nav-item">
-                <a href="/folder/<%= folder.id %>" class="nav-link d-flex align-items-center gap-2 <%= locals.urlPath.endsWith(`/folder/${folder.id}`) ? 'active' : '' %>" <%= locals.urlPath.endsWith(`/folder/${folder.id}`) ? 'aria-current=page' : '' %>>
-                  <img src="/icons/folder.svg" alt=""><%= folder.name %>
+                <a href="/folder/<%= folder.id %>" class="nav-link d-flex justify-content-between align-items-center gap-4 <%= locals.urlPath.endsWith(`/folder/${folder.id}`) ? 'active' : '' %>" <%= locals.urlPath.endsWith(`/folder/${folder.id}`) ? 'aria-current=page' : '' %>>
+                  <div class="d-flex align-items-center gap-2">
+                    <img src="/icons/folder.svg" alt=""><%= folder.name %>
+                  </div>
+                  <span class="badge badge-24 text-bg-primary rounded-pill d-flex justify-content-center align-items-center"><%= folder._count.files %></span>
                 </a>
             </li>
           <% }); %>
