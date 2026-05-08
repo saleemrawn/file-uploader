@@ -34,7 +34,7 @@
         <select name="folder" id="folder" class="form-select" aria-label="Select a folder">
           <option value="">-- Select a folder --</option>
           <% folders.forEach(folder => { %>
-           <option value="<%= folder.id %>" <%= folder.id === folderId ? "selected" : "" %>><%= folder.name %></option>
+           <option value="<%= folder.id %>" <%= folder.id === locals?.folderId || folder.id === file.folder?.id ? "selected" : "" %>><%= folder.name %></option>
           <% }) %>
         </select>
       </div>
