@@ -147,11 +147,17 @@ async function deleteFile(req, res, next) {
 async function downloadFile(req, res, next) {
   const fileId = Number(req.params.fileId);
   const file = await fileRepository.getFileById(fileId);
-  res.download(file.path, file.name, (err) => {
-    if (err) {
-      return next(err);
-    }
-  });
+
+  const { data, error } = await supabase.storage.from(`/public/${file.bucket}`).download(file.path);
+  if (error) return next(error);
+
+  const buffer = Buffer.from(await data.arrayBuffer());
+
+  res.setHeader("Content-Type", file.mimetype);
+  res.setHeader("Content-Length", buffer.length);
+  res.setHeader("Content-Disposition", `attachment; filename="${file.name}"`);
+
+  res.send(buffer);
 }
 
 module.exports = {
