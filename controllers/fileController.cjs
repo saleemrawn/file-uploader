@@ -54,6 +54,7 @@ async function uploadFile(req, res, next) {
         folderId: Number(req.body.folder),
       });
 
+      req.flash("info", ["Upload successful", "success"]);
       res.redirect("/");
     } catch (err) {
       next(err);
