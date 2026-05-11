@@ -10,14 +10,15 @@ passport.use(
   new LocalStrategy(async (username, password, done) => {
     try {
       const user = await userRepository.findUserByUsername(username);
+      const errMessage = "Incorrect username or password";
 
       if (!user) {
-        return done(null, false, { message: "Incorrect username" });
+        return done(null, false, { message: errMessage });
       }
 
       const match = await bcrypt.compare(password, user.password);
       if (!match) {
-        return done(null, false, { message: "Incorrect password" });
+        return done(null, false, { message: errMessage });
       }
 
       return done(null, user);
@@ -43,7 +44,26 @@ passport.deserializeUser(async (id, done) => {
 authRouter.get("/sign-up", authController.renderSignUp);
 authRouter.get("/login", authController.renderLogin);
 authRouter.get("/logout", authController.logoutUser);
-authRouter.post("/login", passport.authenticate("local", { successRedirect: "/", failureRedirect: "/login" }));
+authRouter.post("/login", (req, res, next) => {
+  passport.authenticate("local", (err, user, info, status) => {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      req.flash("info", ["Incorrect username or password", "danger"]);
+      return res.redirect("/login");
+    }
+
+    req.login(user, (err) => {
+      if (err) {
+        return next(err);
+      }
+
+      res.redirect("/");
+    });
+  })(req, res, next);
+});
+
 authRouter.post("/sign-up", authController.userValidators, authController.createUserAccount);
 
 module.exports = authRouter;
