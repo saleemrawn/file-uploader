@@ -46,20 +46,24 @@ authRouter.get("/login", authController.renderLogin);
 authRouter.get("/logout", authController.logoutUser);
 authRouter.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user, info, status) => {
-    if (err) {
-      return next(err);
-    }
+    if (err) return next(err);
+
     if (!user) {
       req.flash("info", ["Incorrect username or password", "danger"]);
-      return res.redirect("/login");
+      req.session.save((err) => {
+        if (err) return next(err);
+        return res.redirect("/login");
+      });
     }
 
     req.login(user, (err) => {
-      if (err) {
-        return next(err);
-      }
+      if (err) return next(err);
+
       req.flash("info", ["Login Successful", "success"]);
-      res.redirect("/");
+      req.session.save((err) => {
+        if (err) return next(err);
+        return res.redirect("/");
+      });
     });
   })(req, res, next);
 });
