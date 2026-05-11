@@ -139,7 +139,12 @@ async function deleteFile(req, res, next) {
     await fileRepository.deleteFileById(fileId);
 
     const path = req.body.folderId ? `/folder/${req.body.folderId}` : "/";
-    res.redirect(path);
+
+    req.flash("info", ["File deleted successfully!", "success"]);
+    req.session.save((err) => {
+      if (err) return next(err);
+      res.redirect(path);
+    });
   } catch (err) {
     next(err);
   }

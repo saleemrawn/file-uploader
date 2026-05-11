@@ -24,7 +24,7 @@ async function renderFolder(req, res, next) {
       return next(err);
     }
 
-    res.render("folder", { title: folder.name, folder: folder, bytes, date });
+    res.render("folder", { title: folder.name, folder: folder, message: req.flash("info"), bytes, date });
   } catch (err) {
     next(err);
   }
