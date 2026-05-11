@@ -58,7 +58,7 @@ authRouter.post("/login", (req, res, next) => {
       if (err) {
         return next(err);
       }
-
+      req.flash("info", ["Login Successful", "success"]);
       res.redirect("/");
     });
   })(req, res, next);
