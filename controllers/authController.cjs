@@ -48,11 +48,12 @@ async function createUserAccount(req, res, next) {
 
 function logoutUser(req, res, next) {
   req.logout((err) => {
-    if (err) {
-      return next(err);
-    }
+    if (err) return next(err);
 
-    res.redirect("/");
+    req.session.destroy((err) => {
+      if (err) return next(err);
+      res.redirect("/");
+    });
   });
 }
 
