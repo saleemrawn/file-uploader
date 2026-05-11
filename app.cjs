@@ -12,6 +12,7 @@ const folderRouter = require("./routes/folderRouter.cjs");
 const flash = require("connect-flash");
 const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
 const { prisma } = require("./lib/prisma.js");
+const errorController = require("./controllers/errorController.cjs");
 const app = express();
 const port = 8080;
 
@@ -64,24 +65,7 @@ app.use("/", indexRouter);
 app.use("/", authRouter);
 app.use("/file", fileRouter);
 app.use("/folder", folderRouter);
-app.use((err, req, res, next) => {
-  console.error(err);
-
-  const statusCode = Number(err.statusCode) || err.status || 500;
-  const message = err.message || "Oops, something went wrong";
-
-  if (err.code === "ENOENT") {
-    return res.status(statusCode).render("customError", {
-      title: `${statusCode} | ${message}`,
-      error: { statusCode, message: "No such file or directory" },
-    });
-  }
-
-  res.status(statusCode).render("customError", {
-    title: `${statusCode} | ${message}`,
-    error: { statusCode, message },
-  });
-});
+app.use(errorController);
 
 app.listen(port, (error) => {
   if (error) {
