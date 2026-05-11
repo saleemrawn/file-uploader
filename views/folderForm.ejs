@@ -12,12 +12,12 @@
 
     <div class="d-flex gap-2">
       <button type="submit" class="btn btn-primary"><%= folder.id ? "Save" : "Create" %></button>
-      <% if (folder.id) { %>
-       <form action="/folder/delete/<%= folder.id %>" method="post" class="d-none d-md-block">
+    </form>
+
+    <% if (folder.id) { %>
+      <form action="/folder/delete/<%= folder.id %>" method="post" class="d-none d-md-block">
         <button type="submit" class="btn btn-danger" onclick="return confirm(`Are you sure you want to delete the folder?`)">Delete</button>
       </form>
-      <% } %>
+    <% } %>
     </div>
-  </form>
-
 </div>
