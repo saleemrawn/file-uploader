@@ -3,21 +3,28 @@ const userRepository = require("../lib/repositories/user.repository");
 const bcrypt = require("bcryptjs");
 
 const userValidators = [
-  body("username").trim().notEmpty().withMessage("Username required").isAlphanumeric().withMessage("Username must only contain letters and numbers"),
+  body("username")
+    .trim()
+    .notEmpty()
+    .withMessage("Username required")
+    .isAlphanumeric()
+    .withMessage("Username must only contain letters and numbers"),
   body("password")
     .trim()
     .notEmpty()
     .withMessage("Password required")
     .isStrongPassword()
-    .withMessage("Password must be minimum 8 characters, with at least one lowercase letter, one uppercase letter, one number, one symbol"),
+    .withMessage(
+      "Password must be minimum 8 characters, with at least one lowercase letter, one uppercase letter, one number, one symbol",
+    ),
 ];
 
 function renderSignUp(req, res) {
-  res.render("sign-up", { title: "Sign-Up" });
+  res.render("sign-up", { title: "Sign-Up", message: req.flash("info") });
 }
 
 function renderLogin(req, res) {
-  res.render("login", { title: "Login" });
+  res.render("login", { title: "Login", message: req.flash("info") });
 }
 
 async function createUserAccount(req, res, next) {
