@@ -9,6 +9,7 @@ const passport = require("passport");
 const folderRepository = require("./lib/repositories/folder.repository.js");
 const fileRepository = require("./lib/repositories/file.repository.js");
 const folderRouter = require("./routes/folderRouter.cjs");
+const flash = require("connect-flash");
 const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
 const { prisma } = require("./lib/prisma.js");
 const app = express();
@@ -33,6 +34,7 @@ app.use(
   }),
 );
 app.use(passport.session());
+app.use(flash());
 app.use(express.urlencoded({ extended: true }));
 app.use((req, res, next) => {
   if (req.url.match(/\.html$/)) return res.set("Cache-Control", "no-cache");
