@@ -40,7 +40,10 @@ async function createUserAccount(req, res, next) {
     await userRepository.createUser(username, hashedPassword);
 
     req.flash("info", ["Account created successfully!", "success"]);
-    res.redirect("/login");
+    res.session.save((err) => {
+      if (err) return next(err);
+      res.redirect("/login");
+    });
   } catch (err) {
     next(err);
   }
