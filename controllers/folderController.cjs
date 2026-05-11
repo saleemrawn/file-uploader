@@ -66,7 +66,12 @@ async function createFolder(req, res, next) {
     const { name } = matchedData(req);
     await folderRepository.createFolder({ name: name, ownerId: Number(req.body.ownerId) });
 
-    res.redirect("/folder/manage");
+    req.flash("info", ["Folder created successfully!", "success"]);
+
+    req.session.save((err) => {
+      if (err) return next(err);
+      res.redirect("/folder/manage");
+    });
   } catch (err) {
     next(err);
   }
