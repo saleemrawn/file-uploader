@@ -97,7 +97,10 @@ async function updateFolder(req, res, next) {
     await folderRepository.updateFolder({ name: name, folderId: Number(req.params.folderId) });
 
     req.flash("info", ["Folder updated successfully!", "success"]);
-    res.redirect("/folder/manage");
+    req.session.save((err) => {
+      if (err) return next(err);
+      res.redirect("/folder/manage");
+    });
   } catch (err) {
     next(err);
   }
