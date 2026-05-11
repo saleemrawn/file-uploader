@@ -122,7 +122,10 @@ async function updateFileFolder(req, res, next) {
     const ownerId = Number(req.body.ownerId);
 
     await fileRepository.updateFileFolderById({ fileId: fileId, folderId: folderId, ownerId: ownerId });
-    res.redirect(`/folder/${folderId}`);
+    req.flash("info", ["File updated successfully!", "success"]);
+    req.session.save((err) => {
+      res.redirect(`/folder/${folderId}`);
+    });
   } catch (err) {
     next(err);
   }
