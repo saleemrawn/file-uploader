@@ -1,0 +1,22 @@
+<% if (locals.message?.length > 0) { %>
+ <div class="alert-container container-fluid fixed-top m-2 show">
+  <div class="alert alert-<%= message[1] %> " role="alert">
+    <%= message[0] %> 
+  </div> 
+ </div>
+<% } %>
+
+<script>
+    const alertContainer = document?.querySelector(".alert-container");
+
+    let alertTimer = null;
+
+    clearTimeout(alertTimer);
+
+    alertTimer = setTimeout(() => {
+        alertContainer?.classList.add("fade");
+        alertContainer?.classList.remove("show");
+
+        setTimeout(() => alertContainer?.remove(), 100);
+    }, 3000);
+</script>
