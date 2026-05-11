@@ -52,7 +52,7 @@ async function renderEditFolder(req, res, next) {
 }
 
 function renderManageFolders(req, res) {
-  res.render("manageFolders", { title: "Manage Folders" });
+  res.render("manageFolders", { title: "Manage Folders", message: req.flash("info") });
 }
 
 async function createFolder(req, res, next) {
@@ -90,6 +90,8 @@ async function updateFolder(req, res, next) {
 
     const { name } = matchedData(req);
     await folderRepository.updateFolder({ name: name, folderId: Number(req.params.folderId) });
+
+    req.flash("info", ["Folder updated successfully!", "success"]);
     res.redirect("/folder/manage");
   } catch (err) {
     next(err);
