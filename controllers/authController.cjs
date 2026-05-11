@@ -39,6 +39,7 @@ async function createUserAccount(req, res, next) {
     const hashedPassword = await bcrypt.hash(password, 10);
     await userRepository.createUser(username, hashedPassword);
 
+    req.flash("info", ["Account created successfully!", "success"]);
     res.redirect("/login");
   } catch (err) {
     next(err);
