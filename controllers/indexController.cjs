@@ -4,7 +4,9 @@ const date = require("date-fns");
 
 function renderHomepage(req, res) {
   const title = req.user ? "Dashboard" : "Simple & Easy File Uploader";
-  res.render("index", { title: title, bytes, date });
+  const message = req.flash("info");
+
+  res.render("index", { title, message, bytes, date });
 }
 
 async function renderRecentFiles(req, res, next) {
