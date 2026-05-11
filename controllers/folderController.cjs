@@ -107,7 +107,13 @@ async function deleteFolder(req, res, next) {
   try {
     const folderId = Number(req.params.folderId);
     await folderRepository.deleteFolder(folderId);
-    res.redirect("/folder/manage");
+
+    req.flash("info", ["Folder deleted successfully!", "success"]);
+
+    req.session.save((err) => {
+      if (err) return next(err);
+      res.redirect("/folder/manage");
+    });
   } catch (err) {
     next(err);
   }
