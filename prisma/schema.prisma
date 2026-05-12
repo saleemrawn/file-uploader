@@ -18,6 +18,7 @@ model User {
   password    String
   folders     Folder[]
   files       File[]
+  shareLinks  ShareLink[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
@@ -55,9 +56,23 @@ model Folder {
   owner       User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId     Int       
   files       File[]
+  shareLink   ShareLink[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
   @@unique([name, ownerId])
   @@map("folder")
+}
+
+model ShareLink {
+  id          Int       @id @default(autoincrement())
+  shareUuid   String    @unique
+  folder      Folder    @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  folderId    Int
+  createdBy   User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId     Int
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime
+
+  @@map("share_links")
 }
