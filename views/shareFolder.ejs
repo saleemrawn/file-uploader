@@ -1,0 +1,48 @@
+<div class="p-2 mt-4 p-lg-5 mt-lg-0">
+  <h1 class="mb-3"><%= title %></h1>
+
+  <% if (locals.shareUrl) { %>
+    <div class="alert alert-primary d-flex justify-content-between align-items-center mb-4" role="alert">
+        <a href="<%= shareUrl %>" class="share-url fw-bold"><%= shareUrl %></a>
+        <button type="button" onclick="copyShareUrl()" class="btn btn-primary align-self-start d-flex align-items-center gap-2 copy-url-btn">
+          <img src="/icons/copy.svg" alt="" class="filter-white" />Copy Link
+        </button>
+    </div>
+  <% } %>
+
+  <%- include("./partials/errors.ejs") %>
+
+  <div class="d-flex flex-column gap-1 mb-4">
+    <div>Folder</div>
+    <div class="fw-bold"><%= folder.name %></div>
+  </div>
+
+  <form action="/folder/share" method="post">
+    <input type="hidden" name="folderId" value="<%= folder.id %>" />
+    <input type="hidden" name="ownerId" value="<%= currentUser.id %>" />
+
+    <div class="mb-4">
+      <label for="expiryDuration" class="form-label">Expiry Duration</label>
+      <select name="expiryDuration" id="expiryDuration" class="form-select">
+        <option value="1">1 Day</option>
+        <option value="7">1 Week</option>
+        <option value="31">1 Month</option>
+        <option value="365">1 Year</option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Generate Link</button>
+
+  </form>
+</div>
+
+<script>
+  const shareUrl = document.querySelector(".share-url").textContent;
+  const copyUrlButton = document.querySelector(".copy-url-btn");
+
+  function copyShareUrl() {
+    navigator.clipboard.writeText(shareUrl);
+    copyUrlButton.classList.replace("btn-primary", "btn-success");
+    copyUrlButton.innerHTML = '<img src="/icons/circle-check.svg" alt="" class="filter-white" />Copied';
+  }
+</script>
