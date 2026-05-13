@@ -70,6 +70,41 @@ async function renderShareFolderForm(req, res, next) {
   res.render("shareFolder", { title: "Share Folder", message: req.flash("info"), shareUrl, folder });
 }
 
+async function renderSharedFolder(req, res, next) {
+  try {
+    const uuid = req.params.shareUuid;
+    const shareData = await folderRepository.getFolderByUuid(uuid);
+
+    if (!shareData) {
+      const err = new Error("Shared link is broken or does not exist");
+      err.statusCode = 404;
+      return next(err);
+    }
+
+    if (!shareData.folder) {
+      const err = new Error("Shared folder not found");
+      err.statusCode = 404;
+      return next(err);
+    }
+
+    if (shareData.expiresAt < new Date()) {
+      const err = new Error("Shared link has expired");
+      err.statusCode = 410;
+      return next(err);
+    }
+
+    res.render("folder", {
+      title: shareData.folder.name,
+      folder: shareData.folder,
+      message: req.flash("info"),
+      bytes,
+      date,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 async function shareFolder(req, res, next) {
   try {
     const uuid = uuidv4();
@@ -166,6 +201,7 @@ module.exports = {
   renderEditFolder,
   renderManageFolders,
   renderShareFolderForm,
+  renderSharedFolder,
   createFolder,
   updateFolder,
   deleteFolder,
