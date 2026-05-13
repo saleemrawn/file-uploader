@@ -5,6 +5,11 @@ const getStatusCode = (err) => {
 
 const getErrorMessage = (err) => {
   if (err.code === "ENOENT") return "No such file or directory";
+
+  if (err.originalError?.cause?.code === "UND_ERR_CONNECT_TIMEOUT") {
+    return "Unable to connect to the server. Please check your internet connection and try again.";
+  }
+
   if (err.code === "P2002") {
     const field = err.meta?.modelName ?? "field";
     return `A record with that ${field} already exists`;
