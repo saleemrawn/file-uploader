@@ -56,6 +56,20 @@ function renderManageFolders(req, res) {
   res.render("manageFolders", { title: "Manage Folders", message: req.flash("info") });
 }
 
+async function renderShareFolderForm(req, res, next) {
+  const folderId = Number(req.params.folderId);
+  const folder = await folderRepository.getFolderById(folderId);
+  const shareUrl = req.query.shareUrl;
+
+  if (!folder) {
+    const err = new Error("Folder not found");
+    err.statusCode = 404;
+    return next(err);
+  }
+
+  res.render("shareFolder", { title: "Share Folder", message: req.flash("info"), shareUrl, folder });
+}
+
 async function shareFolder(req, res, next) {
   try {
     const uuid = uuidv4();
@@ -151,6 +165,7 @@ module.exports = {
   renderCreateFolder,
   renderEditFolder,
   renderManageFolders,
+  renderShareFolderForm,
   createFolder,
   updateFolder,
   deleteFolder,
