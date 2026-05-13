@@ -1,6 +1,7 @@
 const folderRepository = require("../lib/repositories/folder.repository.js");
 const bytes = require("bytes");
 const date = require("date-fns");
+const { v4: uuidv4 } = require("uuid");
 
 const { body, validationResult, matchedData } = require("express-validator");
 
@@ -53,6 +54,29 @@ async function renderEditFolder(req, res, next) {
 
 function renderManageFolders(req, res) {
   res.render("manageFolders", { title: "Manage Folders", message: req.flash("info") });
+}
+
+async function shareFolder(req, res, next) {
+  try {
+    const uuid = uuidv4();
+    const shareUrl = `${req.protocol}://${req.get("host")}/folder/shared/${uuid}`;
+
+    await folderRepository.createFolderShareLink({
+      uuid,
+      folderId: Number(req.body.folderId),
+      ownerId: Number(req.body.ownerId),
+      expiryDuration: Number(req.body.expiryDuration),
+    });
+
+    req.flash("info", ["Share link generated successfully", "success"]);
+
+    req.session.save((err) => {
+      if (err) return next(err);
+      res.redirect(`/folder/share/${req.body.folderId}?shareUrl=${encodeURIComponent(shareUrl)}`);
+    });
+  } catch (err) {
+    next(err);
+  }
 }
 
 async function createFolder(req, res, next) {
@@ -130,5 +154,6 @@ module.exports = {
   createFolder,
   updateFolder,
   deleteFolder,
+  shareFolder,
   folderValidators,
 };
