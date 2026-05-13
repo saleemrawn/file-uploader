@@ -5,10 +5,18 @@
             <img src="/icons/folder.svg" alt="" class="heading-icon-40">
             <%= title %>
         </h1>
-        <a href="/file/upload?folderId=<%= folder.id %> " class="btn btn-primary d-flex align-items-center gap-2">
-            <img src="/icons/upload.svg" alt="" class="filter-white btn-icon-24" />
-            Upload File
-        </a>
+        <% if (currentUser) { %>
+            <div class="d-flex gap-2">
+                <a href="/file/upload?folderId=<%= folder.id %>" class="btn btn-primary d-flex align-items-center gap-2">
+                    <img src="/icons/upload.svg" alt="" class="filter-white btn-icon-24" />
+                    Upload File
+                </a>
+                <a href="/folder/share/<%= folder.id %>" class="btn btn-secondary d-flex align-items-center gap-2">
+                    <img src="/icons/share-2.svg" alt="" class="filter-white btn-icon-24" />
+                    Share
+                </a>
+            </div>
+        <% } %>
     </div>
     
     <% if (locals.folder.files?.length > 0) { %>
@@ -21,7 +29,9 @@
                     <div class="card-text col d-none d-md-block"><%= bytes(Number(file.size)) %></div>
                     <div class="card-text col d-none d-md-block"><%= date.format(file.createdAt, 'do MMM yyyy - kk:mm') %></div>
                     <a href="/file/download/<%= file.id %>" class="btn btn-primary btn-sm col-auto">Download</a>
-                    <a href="/file/edit/<%= file.id %>" class="btn btn-secondary btn-sm col-auto">Edit</a>
+                    <% if (currentUser) { %>
+                        <a href="/file/edit/<%= file.id %>" class="btn btn-secondary btn-sm col-auto">Edit</a>
+                    <% } %>
                 </div>
             </div>
             <% }) %>
